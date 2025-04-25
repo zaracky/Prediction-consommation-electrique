@@ -1,0 +1,26 @@
+# BentoML
+bentos/
+__pycache__/
+*.pyc
+
+# Docker
+*.dockerfile
+*.tar
+
+# Data lourde
+*.zip
+*.tar.gz
+*.h5
+
+# Env local
+.env
+.venv/
+.envrc
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
