@@ -1,0 +1,12 @@
+service: "service:svc"
+
+include:
+  - service.py
+  - rf_pipeline_light.joblib
+
+
+python:
+  packages:
+    - bentoml
+    - pandas
+    - scikit-learn
