@@ -1,12 +1,15 @@
-service: "service:svc"
+vservice: service:svc
 
 include:
-  - service.py
-  - rf_pipeline_light.joblib
-
+  - main_service.py
+  - random_forest_energy_model.pipeline
+  - random_forest_co2_model.pipeline
 
 python:
+  version: "3.10"  # adapte si besoin
   packages:
-    - bentoml
+    - scikit-learn==1.6.1
     - pandas
-    - scikit-learn
+    - cloudpickle
+    - pydantic
+    - bentoml==1.4.14
