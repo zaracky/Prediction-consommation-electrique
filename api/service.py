@@ -5,6 +5,7 @@ import cloudpickle
 from pydantic import BaseModel, field_validator
 from typing import List
 from bentoml.io import JSON
+from typing import List, ClassVar
 
 # 📦 Chargement des pipelines
 def load_pipeline(filename):
@@ -26,18 +27,51 @@ class Building(BaseModel):
     SourceEUI_kBtu_sf: float
     PrimaryPropertyType: str
     Neighborhood: str
-
+    ALLOWED_TYPES: ClassVar[set[str]] = {"Retail", "Hospital", "Office"}
+    ALLOWED_NEIGHBORHOODS: ClassVar[set[str]] = {"Downtown", "Capitol Hill", "Ballard"}
+    ALLOWED_ENERGY_STAR: ClassVar[tuple[int, int]] = (1, 100)
+    ALLOWED_BUILDING_COUNT: ClassVar[tuple[int, int]] = (1, 20)
+    
+    
     @field_validator(
-        'PropertyGFATotal',
-        'SiteEUI_kBtu_sf',
-        'GHGEmissionsIntensity',
-        'SourceEUI_kBtu_sf'
+        'PropertyGFATotal', 'SiteEUI_kBtu_sf', 'GHGEmissionsIntensity', 'SourceEUI_kBtu_sf',
+        'LargestPropertyUseTypeGFA', 'PropertyGFABuilding_s'
     )
+    
     @classmethod
     def validate_positive(cls, value, field):
         if value < 0:
             raise ValueError(f"{field.name} doit être positif")
         return value
+
+    @field_validator("ENERGYSTARScore")
+    @classmethod
+    def validate_score(cls, value, field):
+        if not (0 <= value <= 100):
+            raise ValueError(f"{field.name} doit être entre 0 et 100")
+        return value
+
+    @field_validator("NumberofFloors")
+    @classmethod
+    def validate_floors(cls, value, field):
+        if value < 1:
+            raise ValueError(f"{field.name} doit être supérieur à 0")
+        return value
+
+    @field_validator("PrimaryPropertyType")
+    @classmethod
+    def validate_property_type(cls, value, field):
+        if value not in cls.ALLOWED_TYPES:
+            raise ValueError(f"{field.name} doit être parmi {cls.ALLOWED_TYPES}")
+        return value
+
+    @field_validator("Neighborhood")
+    @classmethod
+    def validate_neighborhood(cls, value, field):
+        if value not in cls.ALLOWED_NEIGHBORHOODS:
+            raise ValueError(f"{field.name} doit être parmi {cls.ALLOWED_NEIGHBORHOODS}")
+        return value
+
 
     def rename_to_dataset_columns(self) -> dict:
         return {
