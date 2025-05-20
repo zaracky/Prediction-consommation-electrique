@@ -96,14 +96,14 @@ class BuildingList(BaseModel):
     def rename_all(self) -> List[dict]:
         return [b.rename_to_dataset_columns() for b in self.buildings]
 
-# 🚀 Création du service BentoML
+#  Création du service BentoML
 svc = bentoml.Service(name="energy_consumation_predictor")
 
-# 🔧 Chargement des modèles
+#  Chargement des modèles
 pipeline = load_pipeline("random_forest_energy_model.pipeline")
 pipeline_ghg = load_pipeline("random_forest_co2_model.pipeline")
 
-# 🔮 Prédiction sur un bâtiment
+#  Prédiction sur un bâtiment
 @svc.api(input=JSON(pydantic_model=Building), output=JSON())
 def predict_single(input_data: Building) -> dict:
     try:
@@ -121,10 +121,14 @@ def predict_single(input_data: Building) -> dict:
             },
             "status_code": 200
         }
+ 
+    except ValidationError as ve:
+        return {"error": str(ve), "status_code": 422}
+        
     except Exception as e:
         return {"error": str(e), "status_code": 500}
 
-# 🔮 Prédiction sur une liste de bâtiments
+#  Prédiction sur une liste de bâtiments
 @svc.api(input=JSON(pydantic_model=BuildingList), output=JSON())
 def predict_list(input_data: BuildingList) -> dict:
     try:
@@ -148,5 +152,8 @@ def predict_list(input_data: BuildingList) -> dict:
             "number_of_predictions": len(predictions),
             "status_code": 200
         }
+        
+    except ValidationError as ve:
+        return {"error": str(ve), "status_code": 422}
     except Exception as e:
         return {"error": str(e), "status_code": 500}
