@@ -1,15 +1,14 @@
-vservice: service:svc
-
+service: "main_service:svc"
+labels:
+  project: "energy_model"
+  stage: "prod"
 include:
-  - main_service.py
-  - random_forest_energy_model.pipeline
-  - random_forest_co2_model.pipeline
-
+  - "*.py"
+  - "*.pipeline"
 python:
-  version: "3.10"  # adapte si besoin
   packages:
-    - scikit-learn==1.6.1
     - pandas
+    - scikit-learn
+    - bentoml
     - cloudpickle
     - pydantic
-    - bentoml==1.4.14
