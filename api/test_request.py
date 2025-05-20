@@ -1,20 +1,23 @@
 import requests
 
-# URL de ton API locale
-url = "http://localhost:3000/predict"
+url = "http://localhost:3000/predict_single"
 
-# Données de test
-payload = {
-    "PropertyGFATotal": 15000,
-    "YearBuilt": 1995,
-    "NumberofFloors": 3,
+data = {
+    "NumberofBuildings": 1,
+    "LargestPropertyUseTypeGFA": 12000.0,
+    "PropertyGFATotal": 18000.0,
+    "SiteEUI_kBtu_sf": 58.0,
+    "PropertyGFABuilding_s": 17000.0,
+    "SourceEUIWN_kBtu_sf": 61.0,
+    "SiteEUIWN_kBtu_sf": 59.0,
+    "GHGEmissionsIntensity": 6.5,
+    "NumberofFloors": 5,
+    "ENERGYSTARScore": 85.0,
+    "SourceEUI_kBtu_sf": 63.0,
     "PrimaryPropertyType": "Office",
     "Neighborhood": "Downtown"
 }
 
-# Envoi de la requête POST
-response = requests.post(url, json=payload)
-
-# Affichage de la réponse
-print("Status Code:", response.status_code)
-print("Réponse JSON:", response.json())
+response = requests.post(url, json=data)
+print(response.status_code)
+print(response.json())
