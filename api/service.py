@@ -41,35 +41,35 @@ class Building(BaseModel):
     @classmethod
     def validate_positive(cls, value, field):
         if value < 0:
-            raise ValueError(f"{field.name} doit être positif")
+            raise ValueError(f"'{value}' n'est pas une valeur positive")
         return value
 
     @field_validator("ENERGYSTARScore")
     @classmethod
     def validate_score(cls, value, field):
         if not (0 <= value <= 100):
-            raise ValueError(f"{field.name} doit être entre 0 et 100")
+            raise ValueError(f"'{value}' doit être entre 0 et 100")
         return value
 
     @field_validator("NumberofFloors")
     @classmethod
     def validate_floors(cls, value, field):
         if value < 1:
-            raise ValueError(f"{field.name} doit être supérieur à 0")
+            raise ValueError(f"'{value}' doit être supérieur à 0")
         return value
 
     @field_validator("PrimaryPropertyType")
     @classmethod
     def validate_property_type(cls, value, field):
         if value not in cls.ALLOWED_TYPES:
-            raise ValueError(f"{field.name} doit être parmi {cls.ALLOWED_TYPES}")
+            raise ValueError(f"'{value}' doit être parmi {cls.ALLOWED_TYPES}")
         return value
 
     @field_validator("Neighborhood")
     @classmethod
     def validate_neighborhood(cls, value, field):
         if value not in cls.ALLOWED_NEIGHBORHOODS:
-            raise ValueError(f"{field.name} doit être parmi {cls.ALLOWED_NEIGHBORHOODS}")
+            raise ValueError(f"'{value}' doit être parmi {cls.ALLOWED_NEIGHBORHOODS}")
         return value
 
 
@@ -121,9 +121,6 @@ def predict_single(input_data: Building) -> dict:
             },
             "status_code": 200
         }
- 
-    except ValidationError as ve:
-        return {"error": str(ve), "status_code": 422}
         
     except Exception as e:
         return {"error": str(e), "status_code": 500}
@@ -153,7 +150,5 @@ def predict_list(input_data: BuildingList) -> dict:
             "status_code": 200
         }
         
-    except ValidationError as ve:
-        return {"error": str(ve), "status_code": 422}
     except Exception as e:
         return {"error": str(e), "status_code": 500}
