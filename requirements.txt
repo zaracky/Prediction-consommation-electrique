@@ -1,5 +1,5 @@
-pandas
 bentoml==1.4.14
+pandas==2.2.2
 scikit-learn==1.6.1
-cloudpickle
-pydantic
+pydantic==2.11.1
+cloudpickle==3.0.0
